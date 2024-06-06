@@ -21,14 +21,14 @@ export default function SoilMonitor() {
   return (
     <>
       {isLoading ? (
-        <p>Loading...</p>
+        <p className="h-screen flex justify-center items-center">Loading...</p>
       ) : (
         <>
           <Navbar />
-          <div className="mt-24 mb-8 flex flex-col justify-center items-center">
+          <div className="flex flex-col justify-center items-center h-screen">
             <embed
               src="https://thingsboard.cloud/dashboard/c75516a0-23e5-11ef-b47a-4b47b368e850?publicId=f00e8b70-23e6-11ef-aa16-e306a24f1090"
-              className="h-[1800px] w-[400px] md:w-[1000px] md:h-[450px] rounded-xl md:rounded-3xl"
+              className="h-full w-full md:w-[1000px] md:h-[450px] rounded-xl md:rounded-3xl"
               data-aos="fade-up"
             ></embed>
           </div>
