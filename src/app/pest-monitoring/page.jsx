@@ -7,46 +7,42 @@ import { BlobServiceClient } from "@azure/storage-blob";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { Roboto_Mono } from "next/font/google";
+
+const robotoMono = Roboto_Mono({ weight: "400", subsets: ["latin"] });
 
 export default function PestMonitoring() {
   const [images, setImages] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const containerName = "esp32cam";
+  // const [isLoading, setIsLoading] = useState(true);
 
-  const connectionString =
-    "BlobEndpoint=https://afmsprototech.blob.core.windows.net/;QueueEndpoint=https://afmsprototech.queue.core.windows.net/;FileEndpoint=https://afmsprototech.file.core.windows.net/;TableEndpoint=https://afmsprototech.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2025-01-27T08:13:08Z&st=2024-02-27T00:13:08Z&spr=https,http&sig=I%2F0jVKKeDWBbLqig1%2BQgSr6NtFBnoAakybbqAq077n4%3D";
-  const blobServiceClient =
-    BlobServiceClient.fromConnectionString(connectionString);
-  const containerClient = blobServiceClient.getContainerClient(containerName);
+  // const router = useRouter();
 
-  const router = useRouter();
+  // useEffect(() => {
+  //   if (!Cookies.get("loggedmacaddress")) {
+  //     router.push("/");
+  //   } else {
+  //     const fetchImages = async () => {
+  //       const blobs = [];
+  //       for await (const blob of containerClient.listBlobsFlat()) {
+  //         blobs.push(blob.name);
+  //       }
+  //       setImages(blobs);
+  //     };
+  //     fetchImages();
+  //     setIsLoading(false);
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    if (!Cookies.get("loggedmacaddress")) {
-      router.push("/");
-    } else {
-      const fetchImages = async () => {
-        const blobs = [];
-        for await (const blob of containerClient.listBlobsFlat()) {
-          blobs.push(blob.name);
-        }
-        setImages(blobs);
-      };
-      fetchImages();
-      setIsLoading(false);
-    }
-  }, []);
-
-  const deleteImage = async (imageName) => {
-    const blobClient = containerClient.getBlockBlobClient(imageName);
-    try {
-      await blobClient.delete();
-      // Update the state to remove the deleted image
-      setImages((prevImages) => prevImages.filter((img) => img !== imageName));
-    } catch (error) {
-      console.error("Error deleting image:", error.message);
-    }
-  };
+  // const deleteImage = async (imageName) => {
+  //   const blobClient = containerClient.getBlockBlobClient(imageName);
+  //   try {
+  //     await blobClient.delete();
+  //     // Update the state to remove the deleted image
+  //     setImages((prevImages) => prevImages.filter((img) => img !== imageName));
+  //   } catch (error) {
+  //     console.error("Error deleting image:", error.message);
+  //   }
+  // };
 
   const formatDate = (datetime) => {
     if (datetime[0] == "n") {
@@ -63,31 +59,133 @@ export default function PestMonitoring() {
 
   return (
     <>
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <>
-          <Navbar />
-          <div className="mt-24 mb-8 flex flex-col justify-center items-center">
-            <div>ESP32-CAM Images</div>
-            {isLoading ? (
-              <p>Loading...</p>
-            ) : (
-              <div class="grid grid-cols-2 gap-8 px-4 py-6 lg:py-8 md:grid-cols-3 sm:grid-cols-2">
-                {images.map((image, index) => (
-                  <CardImage
-                    containerName={containerName}
-                    imageName={image}
-                    handleDelete={() => deleteImage(image)}
-                    key={index}
-                  />
-                ))}
+      <Navbar />
+      <div className="mt-24 mb-8 flex flex-col justify-center items-center">
+        <div>ESP32-CAM Images</div>
+        <div class="grid grid-cols-2 gap-8 px-4 py-6 lg:py-8 md:grid-cols-3 sm:grid-cols-2">
+          <div class="w-[11.4rem] h-[20.5rem] md:w-[19rem] md:h-[28rem] bg-[#E5E5E5] border border-gray-200 rounded-xl shadow dark:bg-gray-800 dark:border-gray-700">
+            <a href="#">
+              <img
+                class="rounded-t-lg w-[11.4rem] md:w-[19rem] h-[10.2rem] md:h-[16rem]"
+                src="/imageafms1.jpg"
+                alt="Pest"
+              />
+            </a>
+            <div class="p-5">
+              <a href="#">
+                <h5 class="mb-2 text-sm md:text-xl font-bold tracking-tight text-[#274C5B] dark:text-white">
+                  Date : 06/06/2024
+                </h5>
+                <h5 class="mb-2 md:mb-3 text-sm md:text-xl font-bold tracking-tight text-[#274C5B] dark:text-white">
+                  Time : 16.45
+                </h5>
+              </a>
+              <p
+                className={`${robotoMono.className} mb-3 md:mb-4 font-normal text-xs md:text-base text-center
+                  text-[#FF0000]
+                }`}
+              >
+                Wereng Not Detected
+              </p>
+              <div className="flex space-x-2 md:space-x-4 justify-center">
+                <a
+                  // href="href={`https://tpkiot.blob.core.windows.net/${containerName}/${image}`}"
+                  class="inline-flex shadow items-center px-4 md:px-7 py-2 text-sm font-medium text-center text-white bg-[#274C5B] rounded-lg hover:bg-black"
+                >
+                  Save
+                </a>
+                <button
+                  // onClick={handleDelete}
+                  class="inline-flex shadow items-center px-3 md:px-6 py-2 text-sm font-medium text-center text-black bg-white rounded-lg hover:bg-black hover:text-white"
+                >
+                  Delete
+                </button>
               </div>
-            )}
+            </div>
           </div>
-          <Footer />
-        </>
-      )}
+          <div class="w-[11.4rem] h-[20.5rem] md:w-[19rem] md:h-[28rem] bg-[#E5E5E5] border border-gray-200 rounded-xl shadow dark:bg-gray-800 dark:border-gray-700">
+            <a href="#">
+              <img
+                class="rounded-t-lg w-[11.4rem] md:w-[19rem] h-[10.2rem] md:h-[16rem]"
+                src="/imageafms2.jpg"
+                alt="Pest"
+              />
+            </a>
+            <div class="p-5">
+              <a href="#">
+                <h5 class="mb-2 text-sm md:text-xl font-bold tracking-tight text-[#274C5B] dark:text-white">
+                  Date : 06/06/2024
+                </h5>
+                <h5 class="mb-2 md:mb-3 text-sm md:text-xl font-bold tracking-tight text-[#274C5B] dark:text-white">
+                  Time : 16.45
+                </h5>
+              </a>
+              <p
+                className={`${robotoMono.className} mb-3 md:mb-4 font-normal text-xs md:text-base text-center
+                  text-[#00A224]
+                }`}
+              >
+                Wereng Detected
+              </p>
+              <div className="flex space-x-2 md:space-x-4 justify-center">
+                <a
+                  // href="href={`https://tpkiot.blob.core.windows.net/${containerName}/${image}`}"
+                  class="inline-flex shadow items-center px-4 md:px-7 py-2 text-sm font-medium text-center text-white bg-[#274C5B] rounded-lg hover:bg-black"
+                >
+                  Save
+                </a>
+                <button
+                  // onClick={handleDelete}
+                  class="inline-flex shadow items-center px-3 md:px-6 py-2 text-sm font-medium text-center text-black bg-white rounded-lg hover:bg-black hover:text-white"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="w-[11.4rem] h-[20.5rem] md:w-[19rem] md:h-[28rem] bg-[#E5E5E5] border border-gray-200 rounded-xl shadow dark:bg-gray-800 dark:border-gray-700">
+            <a href="#">
+              <img
+                class="rounded-t-lg w-[11.4rem] md:w-[19rem] h-[10.2rem] md:h-[16rem]"
+                src="/imageafms3.jpg"
+                alt="Pest"
+              />
+            </a>
+            <div class="p-5">
+              <a href="#">
+                <h5 class="mb-2 text-sm md:text-xl font-bold tracking-tight text-[#274C5B] dark:text-white">
+                  Date : 06/06/2024
+                </h5>
+                <h5 class="mb-2 md:mb-3 text-sm md:text-xl font-bold tracking-tight text-[#274C5B] dark:text-white">
+                  Time : 16.45
+                </h5>
+              </a>
+              <p
+                className={`${robotoMono.className} mb-3 md:mb-4 font-normal text-xs md:text-base text-center
+                  text-[#00A224]
+                }`}
+              >
+                Wereng Detected
+              </p>
+              <div className="flex space-x-2 md:space-x-4 justify-center">
+                <a
+                  // href="href={`https://tpkiot.blob.core.windows.net/${containerName}/${image}`}"
+                  class="inline-flex shadow items-center px-4 md:px-7 py-2 text-sm font-medium text-center text-white bg-[#274C5B] rounded-lg hover:bg-black"
+                >
+                  Save
+                </a>
+                <button
+                  // onClick={handleDelete}
+                  class="inline-flex shadow items-center px-3 md:px-6 py-2 text-sm font-medium text-center text-black bg-white rounded-lg hover:bg-black hover:text-white"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <Footer />
     </>
   );
 }
