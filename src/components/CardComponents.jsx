@@ -62,7 +62,7 @@ const CardComponents = ({ isActive, type, targetHumidity }) => {
           <p
             className={`${robotoMono.className} mb-3 md:mb-4 font-normal text-xs md:text-base text-dark dark:text-white`}
           >
-            Until Humidity:{targetHumidity}%
+            Until Humidity:75%
           </p>
         ) : (
           ""
